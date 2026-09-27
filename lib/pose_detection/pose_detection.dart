@@ -126,17 +126,38 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     if (!_modelLoaded || _analyzer == null) return;
     try {
       final poses = await _analyzer!.detectFromCameraImage(image);
+      
+      // Analyze all detected poses
+      final results = <PoseResult>[];
       for (final pose in poses) {
         final result =
             _analyzer!.analyze(pose: pose, imgWidth: image.width, imgHeight: image.height);
-        if (result != null && mounted) {
-          setState(() => _lastResult = result);
-          // Drive the hold timer / calorie accumulator from the match signal.
-          if (widget.targetPose != null) {
-            _updateHold(result.poseId == widget.targetPose, result.correctness);
-          }
+        if (result != null) {
+          results.add(result);
         }
       }
+      
+      if (results.isEmpty || !mounted) return;
+      
+      // FILTERING: If a target pose is set, show ONLY that pose
+      // Otherwise, show the pose with highest confidence
+      PoseResult displayResult;
+      if (widget.targetPose != null) {
+        // Filter to find the target pose
+        final targetResult = results.firstWhere(
+          (r) => r.poseId == widget.targetPose,
+          orElse: () => results.first, // Fallback to first if target not found
+        );
+        displayResult = targetResult;
+        
+        // Only update hold timer if this result matches the target
+        _updateHold(displayResult.poseId == widget.targetPose, displayResult.correctness);
+      } else {
+        // No target pose set: show the most confident detection
+        displayResult = results.reduce((a, b) => a.poseConfidence > b.poseConfidence ? a : b);
+      }
+      
+      setState(() => _lastResult = displayResult);
     } catch (e) {
       debugPrint('Frame processing error: $e');
     }
@@ -296,35 +317,119 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
 
   Widget _buildResultCard() {
     final r = _lastResult!;
+    
+    // When a target pose is set, emphasize it and show if it matches
+    final isTargetMode = widget.targetPose != null;
+    final isMatch = isTargetMode && r.poseId == widget.targetPose;
+    
     return Card(
       color: Colors.white.withValues(alpha: 0.92),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isTargetMode
+          ? BorderSide(
+              color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
+              width: 2,
+            )
+          : BorderSide.none,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Target pose indicator
+            if (isTargetMode)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    Icon(
+                      isMatch ? Icons.check_circle : Icons.info,
+                      color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        isMatch
+                          ? 'Target: ${_titleCase(widget.targetPose!)}'
+                          : 'Detected: ${_titleCase(r.poseId)} (target: ${_titleCase(widget.targetPose!)})',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            // Pose name and correctness
             Row(
               children: [
                 Expanded(
-                  child: Text('Pose: ${_titleCase(r.poseId)}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1B4332))),
+                  child: Text(
+                    'Pose: ${_titleCase(r.poseId)}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Color(0xFF1B4332),
+                    ),
+                  ),
                 ),
-                Text('${(r.correctness * 100).round()}%',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1B4332))),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _correctnessColor(r.correctness),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '${(r.correctness * 100).round()}%',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text('Confidence: ${(r.poseConfidence * 100).round()}%',
-                style: const TextStyle(fontSize: 12, color: Colors.black54)),
+            const SizedBox(height: 8),
+            Text(
+              'Confidence: ${(r.poseConfidence * 100).round()}%',
+              style: const TextStyle(fontSize: 12, color: Colors.black54),
+            ),
             const Divider(height: 12),
-            ...r.topDeviations().map((d) {
+            // Top 3 deviations to fix
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                'Adjustments needed:',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1B4332),
+                ),
+              ),
+            ),
+            ...r.topDeviations().take(3).map((d) {
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 1),
-                child: Text('• ${d.$1}: ${d.$2.toStringAsFixed(0)}° off',
-                    style: const TextStyle(fontSize: 13, color: Colors.black87)),
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    const Text('•', style: TextStyle(color: Color(0xFF9D0208))),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        '${d.$1}: ${d.$2.toStringAsFixed(0)}° off',
+                        style: const TextStyle(fontSize: 13, color: Colors.black87),
+                      ),
+                    ),
+                  ],
+                ),
               );
             }),
           ],
@@ -332,26 +437,66 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
       ),
     );
   }
+  
+  /// Returns color based on correctness percentage
+  Color _correctnessColor(double correctness) {
+    if (correctness >= 0.8) return const Color(0xFF2D6A4F); // Green
+    if (correctness >= 0.6) return const Color(0xFFA4AC86); // Yellow-green
+    if (correctness >= 0.4) return const Color(0xFFFFA500); // Orange
+    return const Color(0xFF9D0208); // Red
+  }
 
   Widget _buildMatchBanner() {
     final r = _lastResult!;
     final isMatch = r.poseId == widget.targetPose;
+    
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       decoration: BoxDecoration(
         color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
         borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: (isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208))
+                .withValues(alpha: 0.5),
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(isMatch ? Icons.check_circle_outline : Icons.adjust, color: Colors.white),
-          const SizedBox(width: 8),
+          Icon(
+            isMatch ? Icons.check_circle : Icons.adjust,
+            color: Colors.white,
+            size: 24,
+          ),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              isMatch ? 'Correct pose' : 'Aim for "${_titleCase(widget.targetPose!)}"',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-              textAlign: TextAlign.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  isMatch ? '✓ Perfect!' : '✗ Not quite right',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  isMatch
+                    ? 'Hold this pose to earn points!'
+                    : 'Adjust to match "${_titleCase(widget.targetPose!)}"',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
