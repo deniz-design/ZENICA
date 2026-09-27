@@ -1,9 +1,6 @@
-// This is a basic Flutter widget test.
+// Basic widget test for the Yoga Login page.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Pumps the login page and verifies the core fields render.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,20 +8,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:yoga_two/loginpage/login_page.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget( const YogaLoginPage());
+  testWidgets('Login page renders email and password fields', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(home: YogaLoginPage()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Login heading renders.
+    expect(find.text('LOGIN'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Email and password fields are present.
+    expect(find.byType(TextField), findsNWidgets(2));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Login button is present.
+    expect(find.text('Login'), findsOneWidget);
   });
 }

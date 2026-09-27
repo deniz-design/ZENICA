@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:yoga_two/homepage/home_page.dart';
 import 'package:yoga_two/loginpage/registration_page.dart';
+import 'package:yoga_two/services/profile_repository.dart';
 import 'login_button.dart';
 import 'login_failure_dialog.dart';
 
@@ -9,10 +9,10 @@ class YogaLoginPage extends StatefulWidget {
   const YogaLoginPage({super.key});
 
   @override
-  _YogaLoginPageState createState() => _YogaLoginPageState();
+  YogaLoginPageState createState() => YogaLoginPageState();
 }
 
-class _YogaLoginPageState extends State<YogaLoginPage> {
+class YogaLoginPageState extends State<YogaLoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -26,16 +26,19 @@ class _YogaLoginPageState extends State<YogaLoginPage> {
     
     // Check if login is successful
     if (userCredential.user != null) {
+      // Reconcile any pre-account onboarding profile into Firestore.
+      await ProfileRepository().uploadLocalToFirestore(userCredential.user!.uid);
+      if (!mounted) return;
       //logged in successfully message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Logged in Successfully...'),
           duration: Duration(seconds: 2),
           backgroundColor: Colors.green,
         ),
       );
       // Navigate to the HomePage or AuthPage
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
     } else {
       // Show failure message if login fails
       _showFailureMessage();
@@ -124,7 +127,7 @@ class _YogaLoginPageState extends State<YogaLoginPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RegistrationPage(),
+        builder: (context) => const RegistrationPage(),
       ),
     );
   },

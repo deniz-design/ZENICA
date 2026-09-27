@@ -3,6 +3,8 @@ import 'package:yoga_two/homepage/media_player_page.dart';
 import 'package:yoga_two/homepage/widgets/soundscape_card.dart';
 
 class SoundscapeSection extends StatelessWidget {
+  const SoundscapeSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,7 +33,7 @@ class SoundscapeSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MediaPlayerPage(
+                      builder: (context) => const MediaPlayerPage(
                         title: 'Ocean Waves',
                         audioPath: 'soundscape/ocean.mp3',
                         backgroundImage: 'assets/sound_ocean.jpg',
@@ -50,7 +52,7 @@ class SoundscapeSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MediaPlayerPage(
+                      builder: (context) => const MediaPlayerPage(
                         title: 'Rainforest',
                         audioPath: 'soundscape/rainforest.mp3',
                         backgroundImage: 'assets/sound_forest.jpg',
@@ -69,7 +71,7 @@ class SoundscapeSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MediaPlayerPage(
+                      builder: (context) => const MediaPlayerPage(
                         title: 'Campfire',
                         audioPath: 'soundscape/campfire.mp3',
                         backgroundImage: 'assets/sound_campfire.jpg',

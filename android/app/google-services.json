@@ -1,26 +1,65 @@
 {
   "project_info": {
-    "project_number": "1075930700335",
-    "project_id": "poseperfect-c3be7",
-    "storage_bucket": "poseperfect-c3be7.firebasestorage.app"
+    "project_number": "504797579917",
+    "project_id": "pose-perfect-0",
+    "storage_bucket": "pose-perfect-0.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1075930700335:android:e55537c7c2486afdb944da",
+        "mobilesdk_app_id": "1:504797579917:android:f54d9b40bb1adcb803b0c4",
         "android_client_info": {
           "package_name": "com.example.yoga_two"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "504797579917-0m2g4vibkso39sljq2hormqr2papbrqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyB3p-rEB7r2Ir1ByEM6-mh1DgHYsiu-Wuc"
+          "current_key": "AIzaSyBj1v-bE-OKl1Qm_t0sdhYaAsATSfvAza8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504797579917-0m2g4vibkso39sljq2hormqr2papbrqd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:504797579917:android:81d37c755330291b03b0c4",
+        "android_client_info": {
+          "package_name": "com.zesu.poseperfect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "504797579917-0m2g4vibkso39sljq2hormqr2papbrqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBj1v-bE-OKl1Qm_t0sdhYaAsATSfvAza8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "504797579917-0m2g4vibkso39sljq2hormqr2papbrqd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class KingDancerPosePage extends StatelessWidget {
+  const KingDancerPosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff95D5B2),
+      backgroundColor: const Color(0xff95D5B2),
       appBar: AppBar(
         title: const Text(
           'Demonstrations',
@@ -28,42 +30,42 @@ class KingDancerPosePage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  "assets/advanced/gifs/king_dancer_pose.gif",
+                  "assets/intermediate/king_dancer_pose.png",
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "King Dancer Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "King Dancer Pose is a graceful backbend and balance pose that strengthens the legs, opens the chest, and improves flexibility in the spine.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start in a standing position with your feet together.\n"
                 "- Shift your weight onto one leg, bend the other knee, and hold the ankle with your hand.\n"
                 "- Reach your other arm forward, and lean back, lifting your chest and hips.\n"
                 "- Hold the pose for 15-30 seconds.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the legs, core, and back.\n"
                 "- Opens the chest and hips.\n"
                 "- Improves balance and concentration.",

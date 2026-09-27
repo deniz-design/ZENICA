@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class FullWheelPosePage extends StatelessWidget {
+  const FullWheelPosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffe7b6b3),
+      backgroundColor: const Color(0xffe7b6b3),
       appBar: AppBar(
         title: const Text(
           'Demonstrations',
@@ -28,42 +30,42 @@ class FullWheelPosePage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  "assets/advanced/gifs/full_wheel_pose.gif",
+                  "assets/advanced/full_wheel_pose.png",
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Full Wheel Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Full Wheel Pose is an advanced backbend that opens the chest, strengthens the arms and legs, and increases spinal flexibility.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Lie on your back with your knees bent and feet flat on the floor.\n"
                 "- Place your hands by your ears, fingers pointing toward your shoulders.\n"
                 "- Press into your hands and feet, lifting your chest and hips off the ground.\n"
                 "- Hold the pose for 15-30 seconds.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the arms, legs, and spine.\n"
                 "- Increases flexibility in the back and chest.\n"
                 "- Stimulates the thyroid and pituitary glands.",

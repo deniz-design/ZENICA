@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CamelPosePage extends StatelessWidget {
+  const CamelPosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff95D5B2),
+      backgroundColor: const Color(0xff95D5B2),
       appBar: AppBar(
         title: const Text(
           'Demonstrations',
@@ -28,29 +30,29 @@ class CamelPosePage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  "assets/intermediate/gifs/camel_pose.gif",
+                  "assets/intermediate/camel_pose.png",
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Camel Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Camel Pose is a backbend that stretches the chest, hips, and thighs, while increasing flexibility in the spine.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start in a kneeling position with your knees hip-width apart.\n"
                 "- Place your hands on your lower back for support.\n"
                 "- Slowly lean back, reaching for your heels with your hands.\n"
@@ -58,13 +60,13 @@ class CamelPosePage extends StatelessWidget {
                 "- Hold the pose for 15-30 seconds.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Stretches the chest, hips, and thighs.\n"
                 "- Increases spinal flexibility.\n"
                 "- Stimulates the heart and respiratory systems.",

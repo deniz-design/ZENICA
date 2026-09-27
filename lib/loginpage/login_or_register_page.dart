@@ -25,10 +25,10 @@ class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
   @override
   Widget build(BuildContext context) {
       if (showLoginPage) {
-        return YogaLoginPage();
+        return const YogaLoginPage();
       }
       else {
-        return RegistrationPage();
+        return const RegistrationPage();
       }
   }
 }

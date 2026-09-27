@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ForearmStandPage extends StatelessWidget {
+  const ForearmStandPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffe7b6b3),
+      backgroundColor: const Color(0xffe7b6b3),
       appBar: AppBar(
         title: const Text(
           'Demonstrations',
@@ -28,42 +30,42 @@ class ForearmStandPage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  "assets/advanced/gifs/forearm_stand.gif",
+                  "assets/advanced/forearm_stand.png",
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Forearm Stand Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "The Forearm Stand is an advanced inversion pose that strengthens the shoulders, arms, and core while improving balance and concentration.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start in a tabletop position, with your forearms on the ground and elbows aligned with your shoulders.\n"
                 "- Walk your feet closer to your elbows, lifting your hips toward the ceiling.\n"
                 "- Engage your core and slowly lift your legs off the ground, stacking your hips over your shoulders.\n"
                 "- Hold the pose for 15-30 seconds.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the shoulders, arms, and core.\n"
                 "- Improves balance and stability.\n"
                 "- Enhances concentration and mental focus.",

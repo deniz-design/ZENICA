@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:yoga_two/camera_test.dart';
+import 'package:yoga_two/pose_detection/pose_detection.dart';
 
 class Warrior1PosePage extends StatelessWidget {
+  const Warrior1PosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfffefae0),
+      backgroundColor: const Color(0xfffefae0),
       appBar: AppBar(
         title: const Text(
           'Choose Difficulty',
@@ -35,57 +37,57 @@ class Warrior1PosePage extends StatelessWidget {
                   fit: BoxFit.cover, // Ensures the image covers the area without distortion
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Warrior I Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Warrior I is a powerful standing pose that stretches the hips and strengthens the legs. It improves stamina and balance while promoting focus.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start in a standing position.\n"
                 "- Step one foot back, bending the front knee to a 90-degree angle.\n"
                 "- Keep your back leg straight, and extend your arms overhead.\n"
                 "- Look forward and hold the pose for 30 seconds to 1 minute.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the legs, core, and arms.\n"
                 "- Improves balance and flexibility.\n"
                 "- Increases stamina and energy.",
                 style: TextStyle(fontSize: 16),
               ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CameraApp()),
+                    MaterialPageRoute(builder: (context) => const PoseDetectionScreen(targetPose: 'warrior_1')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff7f5539), // Button color
-                  padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+                  backgroundColor: const Color(0xff7f5539), // Button color
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Try Now",
                   style: TextStyle(
                     color: Colors.white,

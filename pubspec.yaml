@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.4
+  sdk: ^3.5.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -46,6 +46,15 @@ dependencies:
   audioplayers: ^6.1.0
   permission_handler: ^11.1.0
   camera_windows: ^0.2.6+1
+  google_mlkit_pose_detection: ^0.16.1
+  cloud_firestore: ^5.6.12
+  shared_preferences: ^2.5.5
+  flutter_local_notifications: ^22.3.0
+  timezone: ^0.11.1
+  flutter_timezone: ^5.1.0
+
+
+# AI pose model files (registered below)
   
 
 
@@ -135,6 +144,10 @@ flutter:
     - assets/beginner/beg_cobra.jpg
     - assets/beginner/beg_warrior1.jpg
     - assets/beginner/beg_child.jpg
+    - assets/beginner/corpse_pose.jpg
+    - assets/beginner/seated_easy_pose.jpg
+    - assets/beginner/seated_staff_pose.jpg
+    - assets/beginner/standing_pose.jpg
 
     #beginner pose gifs
     - assets/beginner/gifs/child_pose.gif
@@ -145,28 +158,24 @@ flutter:
     - assets/beginner/gifs/warrior1_pose.gif
 
     #advanced yoga pose images
-    - assets/advanced/forearm_stand.png
-    - assets/advanced/full_wheel_pose.png
-    - assets/advanced/head_stand.png
-    - assets/advanced/peacock_pose.png
-    - assets/advanced/scorpion_pose.png
-    - assets/advanced/side_crow.png
-
-    #advanced pose gifs
-    
+    - assets/advanced/chaturanga_pose.jpg
+    - assets/advanced/halfway_lift_pose.jpg
+    - assets/advanced/upward_salute_pose.jpg
+    - assets/advanced/upward_dog_pose.jpg
+    - assets/advanced/triangle_pose.jpg
+    - assets/advanced/seated_forward_fold.jpg
+    - assets/advanced/table_top_pose.jpg
 
     #intermediate yoga pose images
-    - assets/intermediate/camel_pose.png
-    - assets/intermediate/crow_pose.png
-    - assets/intermediate/eagle_pose.png
-    - assets/intermediate/king_dancer_pose.png
-    - assets/intermediate/revolved_triangle_pose.png
-    - assets/intermediate/warrior3_pose.png
+    - assets/intermediate/warrior_2_pose.jpg
+    - assets/intermediate/plank_pose.jpg
+    - assets/intermediate/lunge_pose.jpg
+    - assets/intermediate/standing_forward_fold.jpg
 
-    #intermediate yoga pose gifs
-
-
-
+    # AI pose model files
+    - assets/model/pose_3head.bin
+    - assets/model/pose_3head.json
+    - assets/model/pose_labels.txt
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -183,25 +192,25 @@ flutter:
     - family: Poppins
       fonts:
         - asset: fonts/Poppins-Black.ttf
-          weight: 700
         - asset: fonts/Poppins-Bold.ttf
-          weight: 700         
+          weight: 700
         - asset: fonts/Poppins-Light.ttf
-          weight: 700
+          weight: 300
         - asset: fonts/Poppins-Medium.ttf
-          weight: 700
-    - family: Monsterrat
+          weight: 500
+    - family: Montserrat
       fonts:
         - asset: fonts/Montserrat.ttf
-          weight: 700
-    - family: League
+          weight: 400
+          style: normal
+    - family: LeagueSpartan
       fonts:
         - asset: fonts/LeagueSpartan-Black.ttf
-          weight: 700
+          weight: 900
         - asset: fonts/LeagueSpartan-Bold.ttf
-          weight: 700         
-        - asset: fonts/LeagueSpartan-ExtraBold.ttf
           weight: 700
+        - asset: fonts/LeagueSpartan-ExtraBold.ttf
+          weight: 800
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

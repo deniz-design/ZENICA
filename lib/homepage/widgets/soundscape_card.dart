@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:yoga_two/homepage/media_player_page.dart';
 
 class SoundscapeCard extends StatelessWidget {
   final String title;
@@ -8,7 +7,7 @@ class SoundscapeCard extends StatelessWidget {
   final String backgroundImage;
   final VoidCallback onTap;
 
-  SoundscapeCard({
+  const SoundscapeCard({super.key, 
     required this.title,
     required this.description,
     required this.icon,
@@ -29,7 +28,7 @@ class SoundscapeCard extends StatelessWidget {
             image: AssetImage(backgroundImage),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.3),
+              Colors.black.withValues(alpha: 0.3),
               BlendMode.darken,
             ),
           ),

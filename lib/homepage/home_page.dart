@@ -6,18 +6,20 @@ import '../exercisepage/exercise_page.dart';
 import '../profilepage/profile_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
     HomeContent(),
     YogaStudio(), // Pass a title here
-    BMICalculatorPage(),
-    ProfilePage(),
+    const BMICalculatorPage(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -51,9 +53,9 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: GNav(
             gap: 8,
-            color: Color(0xFFfaedcd),
+            color: const Color(0xFFfaedcd),
             activeColor: const Color(0xFFfaedcd),
-            tabBackgroundColor: Color(0xffd4a373),
+            tabBackgroundColor: const Color(0xffd4a373),
             padding: const EdgeInsets.all(10),
             onTabChange: _onItemTapped,
             tabs: const [

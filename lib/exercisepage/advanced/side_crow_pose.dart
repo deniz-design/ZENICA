@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SideCrowPosePage extends StatelessWidget {
+  const SideCrowPosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff95D5B2),
+      backgroundColor: const Color(0xff95D5B2),
       appBar: AppBar(
         title: const Text(
           'Demonstrations',
@@ -28,42 +30,42 @@ class SideCrowPosePage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  "assets/advanced/gifs/side_crow_pose.gif",
+                  "assets/advanced/side_crow.png",
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Side Crow Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Side Crow Pose is an arm balance that strengthens the core, arms, and wrists, improving stability and concentration.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start in a squat position with your hands on the floor, shoulder-width apart.\n"
                 "- Twist your torso to one side, bringing your knees toward your elbows.\n"
                 "- Engage your core and lift your feet off the ground.\n"
                 "- Hold the pose for 10-15 seconds.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the arms, wrists, and core.\n"
                 "- Improves balance and stability.\n"
                 "- Increases concentration and focus.",

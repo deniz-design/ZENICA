@@ -7,7 +7,7 @@ class MediaPlayerPage extends StatefulWidget {
   final String backgroundImage;
   final String slogan;
 
-  MediaPlayerPage({
+  const MediaPlayerPage({super.key, 
     required this.title,
     required this.audioPath,
     required this.backgroundImage,
@@ -15,28 +15,46 @@ class MediaPlayerPage extends StatefulWidget {
   });
 
   @override
-  _MediaPlayerPageState createState() => _MediaPlayerPageState();
+  MediaPlayerPageState createState() => MediaPlayerPageState();
 }
 
-class _MediaPlayerPageState extends State<MediaPlayerPage> {
+class MediaPlayerPageState extends State<MediaPlayerPage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool isPlaying = false;
+  bool _hasStarted = false;
 
   @override
   void initState() {
     super.initState();
-    _audioPlayer.setSourceAsset(widget.audioPath);
+    // The asset path is relative to the 'assets/' directory.
+    _audioPlayer.setSource(AssetSource(widget.audioPath));
   }
 
   void _togglePlayPause() async {
-    if (isPlaying) {
-      await _audioPlayer.pause();
-    } else {
-      await _audioPlayer.resume();
+    try {
+      if (isPlaying) {
+        await _audioPlayer.pause();
+      } else if (_hasStarted) {
+        // resume() only continues playback that was previously started.
+        await _audioPlayer.resume();
+      } else {
+        // First play: start the source from the beginning.
+        await _audioPlayer.play(AssetSource(widget.audioPath));
+        _hasStarted = true;
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not play audio: $e')),
+        );
+      }
+      return;
     }
-    setState(() {
-      isPlaying = !isPlaying;
-    });
+    if (mounted) {
+      setState(() {
+        isPlaying = !isPlaying;
+      });
+    }
   }
 
   @override
@@ -56,7 +74,7 @@ class _MediaPlayerPageState extends State<MediaPlayerPage> {
             fit: BoxFit.cover,
           ),
           Container(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,

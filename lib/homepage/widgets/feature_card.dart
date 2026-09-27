@@ -6,7 +6,7 @@ class FeatureCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  FeatureCard({
+  const FeatureCard({super.key, 
     required this.title,
     required this.description,
     required this.icon,

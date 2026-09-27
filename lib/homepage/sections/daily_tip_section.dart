@@ -3,11 +3,13 @@ import 'dart:async';
 import '../widgets/daily_tip_card.dart';
 
 class DailyTipSection extends StatefulWidget {
+  const DailyTipSection({super.key});
+
   @override
-  _DailyTipSectionState createState() => _DailyTipSectionState();
+  DailyTipSectionState createState() => DailyTipSectionState();
 }
 
-class _DailyTipSectionState extends State<DailyTipSection> {
+class DailyTipSectionState extends State<DailyTipSection> {
   final List<Map<String, String>> dailyTips = [
     {'title': 'Stay Hydrated', 'description': 'Drinking water improves flexibility.'},
     {'title': 'Proper Breathing', 'description': 'Focus on your breathing for relaxation.'},
@@ -20,7 +22,7 @@ class _DailyTipSectionState extends State<DailyTipSection> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 10), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       setState(() {
         currentTipIndex = (currentTipIndex + 1) % dailyTips.length;
       });

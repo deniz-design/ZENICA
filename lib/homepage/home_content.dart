@@ -23,6 +23,8 @@ class HomeContent extends StatelessWidget {
     'assets/yoga_pose15.jpeg',
   ];
 
+  HomeContent({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -58,11 +60,11 @@ class HomeContent extends StatelessWidget {
             const SizedBox(height: 20.0),
 
             // Sections
-            SoundscapeSection(),
+            const SoundscapeSection(),
             const SizedBox(height: 20.0),
-            DailyTipSection(),
+            const DailyTipSection(),
             const SizedBox(height: 20.0),
-            QuickRecipeSection(),
+            const QuickRecipeSection(),
           ],
         ),
       ),

@@ -47,29 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAclAXPt14HPKoYE9aPFmMPxVXhLuuw1eo',
-    appId: '1:1075930700335:web:76b7eaa86db9d76db944da',
-    messagingSenderId: '1075930700335',
-    projectId: 'poseperfect-c3be7',
-    authDomain: 'poseperfect-c3be7.firebaseapp.com',
-    storageBucket: 'poseperfect-c3be7.firebasestorage.app',
+    apiKey: 'AIzaSyBG2wHCrGrwi2WQPmXt7c_9kxsISAfx8Ek',
+    appId: '1:504797579917:web:ea946b046cc3f33703b0c4',
+    messagingSenderId: '504797579917',
+    projectId: 'pose-perfect-0',
+    authDomain: 'pose-perfect-0.firebaseapp.com',
+    storageBucket: 'pose-perfect-0.firebasestorage.app',
+    measurementId: 'G-L337B5QRY9',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB3p-rEB7r2Ir1ByEM6-mh1DgHYsiu-Wuc',
-    appId: '1:1075930700335:android:e55537c7c2486afdb944da',
-    messagingSenderId: '1075930700335',
-    projectId: 'poseperfect-c3be7',
-    storageBucket: 'poseperfect-c3be7.firebasestorage.app',
+    apiKey: 'AIzaSyBj1v-bE-OKl1Qm_t0sdhYaAsATSfvAza8',
+    appId: '1:504797579917:android:f54d9b40bb1adcb803b0c4',
+    messagingSenderId: '504797579917',
+    projectId: 'pose-perfect-0',
+    storageBucket: 'pose-perfect-0.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDosn5FnBuQ91PZ0d9C0qNk6d1uSVL4Q_Q',
-    appId: '1:1075930700335:ios:c5a262caa9e0f617b944da',
-    messagingSenderId: '1075930700335',
-    projectId: 'poseperfect-c3be7',
-    storageBucket: 'poseperfect-c3be7.firebasestorage.app',
+    apiKey: 'AIzaSyAlmRb-YzM4ddB2P3xuafmQImc29fsYUeo',
+    appId: '1:504797579917:ios:242bb9f8e4b615e603b0c4',
+    messagingSenderId: '504797579917',
+    projectId: 'pose-perfect-0',
+    storageBucket: 'pose-perfect-0.firebasestorage.app',
+    iosClientId: '504797579917-62q68clucfado7p2a2rioegl7t12mdg6.apps.googleusercontent.com',
     iosBundleId: 'com.example.yogaTwo',
   );
-
 }

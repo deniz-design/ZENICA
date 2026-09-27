@@ -7,7 +7,7 @@ class CreateFailureDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Account Creation Failed'),
-      content: const Text('Password do no match or account alrady exists'),
+      content: const Text('Passwords do not match or the account already exists'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:yoga_two/camera_test.dart';
+import 'package:yoga_two/pose_detection/pose_detection.dart';
 
 class DownwardDogPage extends StatelessWidget {
+  const DownwardDogPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfffefae0),
+      backgroundColor: const Color(0xfffefae0),
       appBar: AppBar(
         title: const Text(
           'Demonstration',
@@ -35,23 +37,23 @@ class DownwardDogPage extends StatelessWidget {
                   fit: BoxFit.cover, // Ensures the image covers the area without distortion
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Downward Dog Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Downward Dog is a foundational yoga pose that stretches and strengthens the entire body. It helps to calm the mind and energize the body.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start on your hands and knees in a tabletop position.\n"
                 "- Spread your fingers wide and press your palms into the mat.\n"
                 "- Tuck your toes under and lift your hips towards the ceiling.\n"
@@ -60,35 +62,35 @@ class DownwardDogPage extends StatelessWidget {
                 "- Hold the pose for 30 seconds to 1 minute.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the arms, shoulders, and legs.\n"
                 "- Stretches the hamstrings, calves, and spine.\n"
                 "- Improves blood flow and energizes the body.\n"
                 "- Helps relieve stress and calm the mind.",
                 style: TextStyle(fontSize: 16),
               ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CameraApp()),
+                    MaterialPageRoute(builder: (context) => const PoseDetectionScreen(targetPose: 'downward_dog')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff7f5539), // Button color
-                  padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+                  backgroundColor: const Color(0xff7f5539), // Button color
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Try Now",
                   style: TextStyle(
                     color: Colors.white,

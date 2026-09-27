@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import '../widgets/recipe_card.dart';
 
 class QuickRecipeSection extends StatelessWidget {
+  const QuickRecipeSection({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Quick Recipes',
           style: TextStyle(
             fontSize: 22,
@@ -16,7 +18,7 @@ class QuickRecipeSection extends StatelessWidget {
             color: Color(0xFFd4a373),
           ),
         ),
-        const SizedBox(height: 8.0),
+        SizedBox(height: 8.0),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

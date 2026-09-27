@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CrowPosePage extends StatelessWidget {
+  const CrowPosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff95D5B2),
+      backgroundColor: const Color(0xff95D5B2),
       appBar: AppBar(
         title: const Text(
           'Demonstrations',
@@ -28,29 +30,29 @@ class CrowPosePage extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  "assets/advanced/gifs/crow_pose.gif",
+                  "assets/intermediate/crow_pose.png",
                   width: double.infinity,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Crow Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Crow Pose is an arm balance that strengthens the arms, wrists, and core, while also enhancing mental focus and stability.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Start in a squat position with your feet close together.\n"
                 "- Place your hands on the floor in front of you, shoulder-width apart.\n"
                 "- Bend your elbows slightly and shift your weight forward.\n"
@@ -58,13 +60,13 @@ class CrowPosePage extends StatelessWidget {
                 "- Hold the pose for 10-30 seconds.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Strengthens the arms, wrists, and core.\n"
                 "- Improves balance and stability.\n"
                 "- Enhances concentration and mental focus.",

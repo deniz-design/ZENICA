@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:yoga_two/camera_test.dart';
+import 'package:yoga_two/pose_detection/pose_detection.dart';
 
 class TreePosePage extends StatelessWidget {
+  const TreePosePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfffefae0),
+      backgroundColor: const Color(0xfffefae0),
       appBar: AppBar(
         title: const Text(
           'Choose Difficulty',
@@ -35,57 +37,58 @@ class TreePosePage extends StatelessWidget {
                   fit: BoxFit.cover, // Ensure the image covers the space without distortion
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Tree Pose",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Tree Pose is a balancing pose that strengthens the legs and improves focus. It helps enhance posture and opens the hips.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "How to Do It:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Stand tall with your feet together.\n"
                 "- Shift your weight to one foot and place the other foot on the inner thigh or calf (avoid the knee).\n"
                 "- Bring your palms together in front of your chest or extend your arms overhead.\n"
                 "- Hold the pose for 30 seconds to 1 minute.",
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "Benefits:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "- Improves balance and coordination.\n"
                 "- Strengthens the legs and core.\n"
                 "- Opens the hips and increases flexibility.",
                 style: TextStyle(fontSize: 16),
               ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => CameraApp()),
+                    MaterialPageRoute(
+                        builder: (context) => const PoseDetectionScreen(targetPose: 'tree_pose')),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff7f5539), // Button color
-                  padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+                  backgroundColor: const Color(0xff7f5539), // Button color
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Try Now",
                   style: TextStyle(
                     color: Colors.white,

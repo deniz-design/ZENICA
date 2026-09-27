@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:yoga_two/homepage/home_page.dart';
 import 'package:yoga_two/loginpage/login_page.dart';
-import 'package:yoga_two/loginpage/registration_page.dart';
+import 'package:yoga_two/services/profile_repository.dart';
 import 'create_button.dart';
 import 'create_failure_dialog.dart';
 
@@ -11,16 +10,16 @@ class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
 
   @override
-  _RegistrationPageState createState() => _RegistrationPageState();
+  RegistrationPageState createState() => RegistrationPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
     final TextEditingController confirmpassController = TextEditingController();
 
 
-  void _regsiter() async {
+  void _register() async {
 
      
 
@@ -37,17 +36,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
     // Check if login is successful
     if (userCredential.user != null) {
+      // Upload the onboarding profile (collected before account creation)
+      // into Firestore keyed by the new user's UID.
+      await ProfileRepository().uploadLocalToFirestore(userCredential.user!.uid);
+      if (!mounted) return;
       //account created successfully message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Account Created Successfully...'),
           duration: Duration(seconds: 2),
           backgroundColor: Colors.green,
         ),
       );
       // Navigate to the HomePage or AuthPage
-      Navigator.pushReplacementNamed(context, '/home');
-      
+      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+
     } else {
       // Show failure message if login fails
       _showFailureMessage();
@@ -137,7 +140,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               ),
               const SizedBox(height: 20),
               // Login Button
-              CreateButton(onPressed: _regsiter),
+              CreateButton(onPressed: _register),
               const SizedBox(height: 20),
               // Create Account Row
               Row(
@@ -152,7 +155,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-          builder: (context) => YogaLoginPage(),
+          builder: (context) => const YogaLoginPage(),
                 ),
               );
             },

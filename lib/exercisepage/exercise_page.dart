@@ -1,72 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:yoga_two/exercisepage/advanced/forearm_stand.dart';
-import 'package:yoga_two/exercisepage/advanced/full_wheel_pose.dart';
-import 'package:yoga_two/exercisepage/advanced/head_stand.dart';
-import 'package:yoga_two/exercisepage/advanced/peacock_pose.dart';
-import 'package:yoga_two/exercisepage/advanced/scorpion_pose.dart';
-import 'package:yoga_two/exercisepage/advanced/side_crow_pose.dart';
-import 'package:yoga_two/exercisepage/beginner/cobra_pose.dart';
-import 'package:yoga_two/exercisepage/beginner/downward_dog.dart'; // Import pose-specific files
+import 'package:yoga_two/exercisepage/advanced/chaturanga_pose.dart';
+import 'package:yoga_two/exercisepage/advanced/halfway_lift_pose.dart';
+import 'package:yoga_two/exercisepage/advanced/seated_forward_fold.dart';
+import 'package:yoga_two/exercisepage/advanced/table_top_pose.dart';
+import 'package:yoga_two/exercisepage/advanced/triangle_pose.dart';
+import 'package:yoga_two/exercisepage/advanced/upward_dog_pose.dart';
+import 'package:yoga_two/exercisepage/advanced/upward_salute_pose.dart';
 import 'package:yoga_two/exercisepage/beginner/child_pose.dart';
+import 'package:yoga_two/exercisepage/beginner/cobra_pose.dart';
+import 'package:yoga_two/exercisepage/beginner/corpse_pose.dart';
+import 'package:yoga_two/exercisepage/beginner/downward_dog.dart';
 import 'package:yoga_two/exercisepage/beginner/mountain_pose.dart';
+import 'package:yoga_two/exercisepage/beginner/seated_easy_pose.dart';
+import 'package:yoga_two/exercisepage/beginner/seated_staff_pose.dart';
+import 'package:yoga_two/exercisepage/beginner/standing_pose.dart';
 import 'package:yoga_two/exercisepage/beginner/tree_pose.dart';
 import 'package:yoga_two/exercisepage/beginner/warrior1_pose.dart';
-import 'package:yoga_two/exercisepage/intermediate/camel_pose.dart';
-import 'package:yoga_two/exercisepage/intermediate/crow_pose.dart';
-import 'package:yoga_two/exercisepage/intermediate/eagle_pose.dart';
-import 'package:yoga_two/exercisepage/intermediate/king_dancer_pose.dart';
-import 'package:yoga_two/exercisepage/intermediate/revolved_triangle.dart';
-import 'package:yoga_two/exercisepage/intermediate/warrior3_pose.dart'; // Add similar imports for other poses
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Yoga Poses',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: YogaStudio(),
-    );
-  }
-}
+import 'package:yoga_two/exercisepage/intermediate/lunge_pose.dart';
+import 'package:yoga_two/exercisepage/intermediate/plank_pose.dart';
+import 'package:yoga_two/exercisepage/intermediate/standing_forward_fold.dart';
+import 'package:yoga_two/exercisepage/intermediate/warrior_2_pose.dart';
 
 class YogaStudio extends StatelessWidget {
   final List<Map<String, dynamic>> beginnerPoses = [
-    {"name": "Mountain Pose", "image": "assets/beginner/beg_mountain.jpg", "page": MountainPosePage()},
-    {"name": "Child's Pose", "image": "assets/beginner/beg_child.jpg", "page": ChildPosePage()},
-    {"name": "Downward Dog", "image": "assets/beginner/beg_dog.jpg", "page": DownwardDogPage()},
-    {"name": "Cobra Pose", "image": "assets/beginner/beg_cobra.jpg", "page": CobraPosePage()},
-    {"name": "Warrior I", "image": "assets/beginner/beg_warrior1.jpg", "page": Warrior1PosePage()},
-    {"name": "Tree Pose", "image": "assets/beginner/beg_tree.jpg", "page": TreePosePage()},
+    {"name": "Mountain Pose", "image": "assets/beginner/beg_mountain.jpg", "page": const MountainPosePage()},
+    {"name": "Child's Pose", "image": "assets/beginner/beg_child.jpg", "page": const ChildPosePage()},
+    {"name": "Tree Pose", "image": "assets/beginner/beg_tree.jpg", "page": const TreePosePage()},
+    {"name": "Seated Easy Pose", "image": "assets/beginner/seated_easy_pose.jpg", "page": const SeatedEasyPosePage()},
+    {"name": "Seated Staff Pose", "image": "assets/beginner/seated_staff_pose.jpg", "page": const SeatedStaffPosePage()},
+    {"name": "Standing Pose", "image": "assets/beginner/standing_pose.jpg", "page": const StandingPosePage()},
+    {"name": "Corpse Pose", "image": "assets/beginner/corpse_pose.jpg", "page": const CorpsePosePage()},
   ];
 
   final List<Map<String, dynamic>> intermediatePoses = [
-    {"name": "Warrior III", "image": "assets/intermediate/warrior3_pose.png", "page": Warrior3PosePage()},
-    {"name": "Crow Pose", "image": "assets/intermediate/crow_pose.png", "page": CrowPosePage()},
-    {"name": "Eagle Pose", "image": "assets/intermediate/eagle_pose.png", "page": EaglePosePage()},
-    {"name": "Camel Pose", "image": "assets/intermediate/camel_pose.png", "page": CamelPosePage()},
-    {"name": "Revolved Triangle", "image": "assets/intermediate/revolved_triangle_pose.png", "page": RevolvedTrianglePosePage()},
-    {"name": "King Dancer Pose", "image": "assets/intermediate/king_dancer_pose.png", "page": KingDancerPosePage()},
+    {"name": "Downward Dog", "image": "assets/beginner/beg_dog.jpg", "page": const DownwardDogPage()},
+    {"name": "Cobra Pose", "image": "assets/beginner/beg_cobra.jpg", "page": const CobraPosePage()},
+    {"name": "Warrior I", "image": "assets/beginner/beg_warrior1.jpg", "page": const Warrior1PosePage()},
+    {"name": "Warrior II", "image": "assets/intermediate/warrior_2_pose.jpg", "page": const Warrior2PosePage()},
+    {"name": "Plank Pose", "image": "assets/intermediate/plank_pose.jpg", "page": const PlankPosePage()},
+    {"name": "Lunge Pose", "image": "assets/intermediate/lunge_pose.jpg", "page": const LungePosePage()},
+    {"name": "Standing Forward Fold", "image": "assets/intermediate/standing_forward_fold.jpg", "page": const StandingForwardFoldPage()},
   ];
 
   final List<Map<String, dynamic>> advancedPoses = [
-    {"name": "Headstand", "image": "assets/advanced/head_stand.png", "page": HeadStandPage()},
-    {"name": "Peacock Pose", "image": "assets/advanced/peacock_pose.png", "page": PeacockPosePage()},
-    {"name": "Scorpions Pose", "image": "assets/advanced/scorpion_pose.png", "page": ScorpionPosePage()},
-    {"name": "Forearm Stand", "image": "assets/advanced/forearm_stand.png", "page": ForearmStandPage()},
-    {"name": "Side Crow Pose", "image": "assets/advanced/side_crow.png", "page": SideCrowPosePage()},
-    {"name": "Full Wheel Pose", "image": "assets/advanced/full_wheel_pose.png", "page": FullWheelPosePage()},
+    {"name": "Upward Salute", "image": "assets/advanced/upward_salute_pose.jpg", "page": const UpwardSalutePosePage()},
+    {"name": "Chaturanga", "image": "assets/advanced/chaturanga_pose.jpg", "page": const ChaturangaPosePage()},
+    {"name": "Upward Dog", "image": "assets/advanced/upward_dog_pose.jpg", "page": const UpwardDogPosePage()},
+    {"name": "Halfway Lift", "image": "assets/advanced/halfway_lift_pose.jpg", "page": const HalfwayLiftPosePage()},
+    {"name": "Triangle Pose", "image": "assets/advanced/triangle_pose.jpg", "page": const TrianglePosePage()},
+    {"name": "Seated Forward Fold", "image": "assets/advanced/seated_forward_fold.jpg", "page": const SeatedForwardFoldPage()},
+    {"name": "Table Top Pose", "image": "assets/advanced/table_top_pose.jpg", "page": const TableTopPosePage()},
   ];
+
+  YogaStudio({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfffefae0),
+      backgroundColor: const Color(0xfffefae0),
       appBar: AppBar(
         title: const Text(
           'Choose Difficulty',
@@ -102,9 +93,9 @@ class YogaStudio extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
           ),
-          Container(
+          SizedBox(
             height: 165,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -144,7 +135,7 @@ class YogaStudio extends StatelessWidget {
                           alignment: Alignment.bottomCenter,
                           child: Container(
                             width: double.infinity,
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Stack(
                               children: [
                                 // Outline (Black text rendered slightly offset in all directions)
@@ -164,7 +155,7 @@ class YogaStudio extends StatelessWidget {
                                 // Fill (White text over the black outline)
                                 Text(
                                   poses[index]["name"]!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Poppins',
