@@ -14,22 +14,21 @@ class VoiceAssistant {
   final FlutterTts _tts = FlutterTts();
   bool _isEnabled = true;
   
-  // Debouncing timers
-  DateTime? _lastCorrectionTime;
-  DateTime? _lastPoseAnnouncementTime;
-  final Duration _correctionDebounce = const Duration(seconds: 5);
-  final Duration _poseAnnouncementDebounce = const Duration(seconds: 3);
+  // State tracking - only announce on CHANGES, not every frame
+  String? _lastStatePose;
+  bool? _lastStateMatch;
+  bool? _lastStateDetected;
   
-  // Track announced states
-  String? _lastAnnouncedPose;
-  bool _lastWasCorrect = false;
+  // Cooldown timer for same announcement
+  DateTime? _lastAnnouncementTime;
+  final Duration _announcementCooldown = const Duration(seconds: 2);
 
   /// Initialize TTS
   Future<void> initialize() async {
     try {
       await _tts.setLanguage("en-US");
-      await _tts.setSpeechRate(0.9); // Slightly slower, clear speech
-      await _tts.setVolume(0.8); // 80% volume
+      await _tts.setSpeechRate(0.85); // Slightly slower, clear speech
+      await _tts.setVolume(0.7); // 70% volume (less intrusive)
       await _tts.setPitch(1.0);
       
       if (defaultTargetPlatform == TargetPlatform.android) {
@@ -48,81 +47,41 @@ class VoiceAssistant {
     }
   }
 
-  /// Set volume (0.0 - 1.0)
-  Future<void> setVolume(double volume) async {
-    await _tts.setVolume(volume.clamp(0.0, 1.0));
-  }
-
-  /// Announce correct pose detected
-  Future<void> announceCorrectPose(String poseName) async {
+  /// Check pose state and announce ONLY on changes
+  Future<void> checkPoseState(String? targetPose, bool poseMatches, bool poseDetected, String? detectedPose) async {
     if (!_isEnabled) return;
     
-    // Debounce: only announce if pose changed or enough time passed
-    final now = DateTime.now();
-    if (_lastAnnouncedPose == poseName && 
-        _lastWasCorrect &&
-        now.difference(_lastPoseAnnouncementTime ?? now).inSeconds < 2) {
+    // No change = no announcement
+    if (_lastStatePose == targetPose && 
+        _lastStateMatch == poseMatches && 
+        _lastStateDetected == poseDetected) {
       return;
     }
     
-    _lastAnnouncedPose = poseName;
-    _lastWasCorrect = true;
-    _lastPoseAnnouncementTime = now;
-    
-    final text = 'Perfect! You\'re in ${_titleCase(poseName)}. Hold it steady.';
-    await _speak(text);
-  }
-
-  /// Announce wrong pose detected
-  Future<void> announceWrongPose(String detectedPose, String targetPose) async {
-    if (!_isEnabled) return;
-    
+    // Apply cooldown for same type of announcement
     final now = DateTime.now();
-    if (_lastAnnouncedPose == detectedPose && 
-        !_lastWasCorrect &&
-        now.difference(_lastPoseAnnouncementTime ?? now).inSeconds < 2) {
+    if (_lastAnnouncementTime != null && 
+        now.difference(_lastAnnouncementTime!).inSeconds < _announcementCooldown.inSeconds) {
       return;
     }
     
-    _lastAnnouncedPose = detectedPose;
-    _lastWasCorrect = false;
-    _lastPoseAnnouncementTime = now;
+    // Update state
+    _lastStatePose = targetPose;
+    _lastStateMatch = poseMatches;
+    _lastStateDetected = poseDetected;
+    _lastAnnouncementTime = now;
     
-    final text = 'That\'s ${_titleCase(detectedPose)}. Adjust to ${_titleCase(targetPose)}.';
-    await _speak(text);
-  }
-
-  /// Announce no pose detected
-  Future<void> announceNoPose() async {
-    if (!_isEnabled) return;
-    
-    final now = DateTime.now();
-    if (_lastAnnouncedPose == 'none' &&
-        now.difference(_lastPoseAnnouncementTime ?? now).inSeconds < 3) {
-      return;
+    // Announce based on state
+    if (!poseDetected) {
+      // No pose detected
+      await _speak('Step in front of the camera to get started.');
+    } else if (targetPose != null && poseMatches) {
+      // Correct pose
+      await _speak('Perfect! You\'re in ${_titleCase(targetPose)}. Hold it steady.');
+    } else if (targetPose != null && !poseMatches && detectedPose != null) {
+      // Wrong pose
+      await _speak('That\'s ${_titleCase(detectedPose)}. Adjust to ${_titleCase(targetPose)}.');
     }
-    
-    _lastAnnouncedPose = 'none';
-    _lastPoseAnnouncementTime = now;
-    
-    const text = 'Step in front of the camera to get started.';
-    await _speak(text);
-  }
-
-  /// Announce pose corrections (joint deviations)
-  Future<void> announceCorrectionFeedback(String jointName, double deviation) async {
-    if (!_isEnabled) return;
-    
-    final now = DateTime.now();
-    if (now.difference(_lastCorrectionTime ?? now).inSeconds < _correctionDebounce.inSeconds) {
-      return; // Debounce corrections
-    }
-    
-    _lastCorrectionTime = now;
-    
-    final deviationInt = deviation.toInt();
-    final text = 'Align your ${_titleCase(jointName)} by $deviationInt degrees.';
-    await _speak(text);
   }
 
   /// Announce hold milestones (10s, 20s, 30s)

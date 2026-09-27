@@ -157,7 +157,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           _poseDetected = false;
           _lastPoseMatches = false;
         });
-        _voiceAssistant.announceNoPose();
+        _voiceAssistant.checkPoseState(widget.targetPose, false, false, null);
         return;
       }
       
@@ -176,13 +176,11 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           displayResult = targetResults.first;
           poseMatches = true;
           _updateHold(true, displayResult!.correctness);
-          _voiceAssistant.announceCorrectPose(widget.targetPose!);
         } else {
           // ✗ WRONG POSE DETECTED - Show the most confident detection
           displayResult = results.reduce((a, b) => a.poseConfidence > b.poseConfidence ? a : b);
           poseMatches = false;
           _updateHold(false, 0);
-          _voiceAssistant.announceWrongPose(displayResult.poseId, widget.targetPose!);
         }
       } else {
         // No target pose set: show the most confident detection
@@ -196,6 +194,13 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           _lastPoseMatches = poseMatches;
           _poseDetected = true;
         });
+        // Check pose state and announce ONLY on changes
+        _voiceAssistant.checkPoseState(
+          widget.targetPose,
+          poseMatches,
+          true,
+          displayResult.poseId,
+        );
       }
     } catch (e) {
       debugPrint('Frame processing error: $e');
