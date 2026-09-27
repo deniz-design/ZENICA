@@ -52,6 +52,7 @@ dependencies:
   flutter_local_notifications: ^22.3.0
   timezone: ^0.11.1
   flutter_timezone: ^5.1.0
+  flutter_tts: ^4.2.5
 
 
 # AI pose model files (registered below)

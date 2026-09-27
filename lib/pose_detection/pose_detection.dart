@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../ml/pose_analyzer.dart';
 import '../services/pose_met.dart';
 import '../services/profile_repository.dart';
+import '../services/voice_assistant.dart';
 
 /// Live pose detection + feedback screen.
 ///
@@ -31,6 +32,10 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   String? _error;
   bool _modelLoaded = false;
   Timer? _processingTimer;
+  
+  // --- Voice assistant ---
+  late VoiceAssistant _voiceAssistant;
+  bool _voiceEnabled = true;
 
   // --- Hold timer + calories ---
   Timer? _holdTicker; // 1 Hz ticker that runs while the target pose is held
@@ -50,6 +55,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   @override
   void initState() {
     super.initState();
+    _voiceAssistant = VoiceAssistant();
+    _voiceAssistant.initialize();
     _init();
   }
 
@@ -150,6 +157,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           _poseDetected = false;
           _lastPoseMatches = false;
         });
+        _voiceAssistant.announceNoPose();
         return;
       }
       
@@ -168,11 +176,13 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           displayResult = targetResults.first;
           poseMatches = true;
           _updateHold(true, displayResult!.correctness);
+          _voiceAssistant.announceCorrectPose(widget.targetPose!);
         } else {
           // ✗ WRONG POSE DETECTED - Show the most confident detection
           displayResult = results.reduce((a, b) => a.poseConfidence > b.poseConfidence ? a : b);
           poseMatches = false;
           _updateHold(false, 0);
+          _voiceAssistant.announceWrongPose(displayResult.poseId, widget.targetPose!);
         }
       } else {
         // No target pose set: show the most confident detection
@@ -224,6 +234,14 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   /// collected correctness samples, persist the stat, and inform the user.
   void _checkCompletion() {
     if (_heldSeconds < 30 || _completionHandled) return;
+    
+    // Announce milestones (10s, 20s, 30s)
+    if (_heldSeconds == 10 || _heldSeconds == 20 || _heldSeconds == 30) {
+      _voiceAssistant.announceMilestone(_heldSeconds);
+    }
+    
+    if (_heldSeconds < 30) return;
+    
     _completionHandled = true;
     _holdTicker?.cancel();
     _holdTicker = null;
@@ -239,6 +257,10 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     if (!mounted) return;
     final poseId = widget.targetPose ?? 'unknown';
     final kcaLTotal = caloriesBurned(poseId, _weightKg, _heldSeconds / 60);
+    
+    // Voice announcement for completion
+    _voiceAssistant.announceCompletion(poseId, _heldSeconds, kcaLTotal);
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -313,6 +335,30 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
               ),
             ),
           ),
+        // Voice toggle button
+        Positioned(
+          right: 16,
+          bottom: 160,
+          child: Material(
+            color: Colors.white.withValues(alpha: 0.85),
+            shape: const CircleBorder(),
+            elevation: 4,
+            child: IconButton(
+              icon: Icon(
+                _voiceEnabled ? Icons.volume_up : Icons.volume_off,
+                color: _voiceEnabled ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
+                size: 28,
+              ),
+              tooltip: _voiceEnabled ? 'Voice ON' : 'Voice OFF',
+              onPressed: () {
+                setState(() {
+                  _voiceEnabled = !_voiceEnabled;
+                  _voiceAssistant.setEnabled(_voiceEnabled);
+                });
+              },
+            ),
+          ),
+        ),
         // Overlay result cards
         Positioned(
           top: 16,
@@ -669,6 +715,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     _holdTicker?.cancel();
     _controller?.dispose();
     _analyzer?.dispose();
+    _voiceAssistant.dispose();
     super.dispose();
   }
 }
