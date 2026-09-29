@@ -4,6 +4,7 @@ import 'home_content.dart';
 import '../bmicalcpage/bmicalc_page.dart';
 import '../exercisepage/exercise_page.dart';
 import '../profilepage/profile_page.dart';
+import '../pose_detection/pose_analyzer_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,6 +19,7 @@ class HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     HomeContent(),
     YogaStudio(), // Pass a title here
+    const PoseAnalyzerPage(),
     const BMICalculatorPage(),
     const ProfilePage(),
   ];
@@ -66,6 +68,10 @@ class HomePageState extends State<HomePage> {
               GButton(
                 icon: Icons.self_improvement,
                 text: 'Exercise',
+              ),
+              GButton(
+                icon: Icons.analytics,
+                text: 'Analyzer',
               ),
               GButton(
                 icon: Icons.calculate_rounded,

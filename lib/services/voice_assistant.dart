@@ -27,7 +27,7 @@ class VoiceAssistant {
   Future<void> initialize() async {
     try {
       await _tts.setLanguage("en-US");
-      await _tts.setSpeechRate(0.85); // Slightly slower, clear speech
+      await _tts.setSpeechRate(0.5); // Slower speech for clarity
       await _tts.setVolume(0.7); // 70% volume (less intrusive)
       await _tts.setPitch(1.0);
       
@@ -78,9 +78,6 @@ class VoiceAssistant {
     } else if (targetPose != null && poseMatches) {
       // Correct pose
       await _speak('Perfect! You\'re in ${_titleCase(targetPose)}. Hold it steady.');
-    } else if (targetPose != null && !poseMatches && detectedPose != null) {
-      // Wrong pose
-      await _speak('That\'s ${_titleCase(detectedPose)}. Adjust to ${_titleCase(targetPose)}.');
     }
   }
 

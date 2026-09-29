@@ -6,6 +6,7 @@ import '../ml/pose_analyzer.dart';
 import '../services/pose_met.dart';
 import '../services/profile_repository.dart';
 import '../services/voice_assistant.dart';
+import '../services/session_tracker.dart';
 
 /// Live pose detection + feedback screen.
 ///
@@ -32,10 +33,13 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   String? _error;
   bool _modelLoaded = false;
   Timer? _processingTimer;
-  
+
   // --- Voice assistant ---
   late VoiceAssistant _voiceAssistant;
   bool _voiceEnabled = true;
+
+  // --- Session tracker ---
+  late SessionTracker _sessionTracker;
 
   // --- Hold timer + calories ---
   Timer? _holdTicker; // 1 Hz ticker that runs while the target pose is held
@@ -44,7 +48,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   bool _completionHandled = false; // record stats + notify only once per session
   final List<double> _accuracySamples = []; // correctness samples collected while held
   double _weightKg = 55; // loaded from profile for calorie math
-  
+
   // --- Pose matching validation ---
   bool _lastPoseMatches = false; // tracks if detected pose matches target pose
   bool _poseDetected = true; // tracks if any pose was detected in the frame
@@ -57,6 +61,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     super.initState();
     _voiceAssistant = VoiceAssistant();
     _voiceAssistant.initialize();
+    _sessionTracker = SessionTracker();
     _init();
   }
 
@@ -113,7 +118,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
 
   /// Returns the first camera with [direction], falling back to the first
   /// available camera if none matches.
-  static CameraDescription _pickCamera(CameraLensDirection direction, List<CameraDescription> cameras) {
+  static CameraDescription _pickCamera(
+      CameraLensDirection direction, List<CameraDescription> cameras) {
     for (final c in cameras) {
       if (c.lensDirection == direction) return c;
     }
@@ -137,7 +143,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     if (!_modelLoaded || _analyzer == null) return;
     try {
       final poses = await _analyzer!.detectFromCameraImage(image);
-      
+
       // Analyze all detected poses
       final results = <PoseResult>[];
       for (final pose in poses) {
@@ -147,9 +153,9 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           results.add(result);
         }
       }
-      
+
       if (!mounted) return;
-      
+
       // Handle no pose detected
       if (results.isEmpty) {
         setState(() {
@@ -160,17 +166,19 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
         _voiceAssistant.checkPoseState(widget.targetPose, false, false, null);
         return;
       }
-      
+
       // STRICT POSE MATCHING: Compare detected vs target pose
       PoseResult? displayResult;
       bool poseMatches = false;
-      
+
       if (widget.targetPose != null) {
         // Try to find the EXACT target pose
-        final targetResults = results.where(
-          (r) => _normalizePoseName(r.poseId) == _normalizePoseName(widget.targetPose!),
-        ).toList();
-        
+        final targetResults = results
+            .where(
+              (r) => _normalizePoseName(r.poseId) == _normalizePoseName(widget.targetPose!),
+            )
+            .toList();
+
         if (targetResults.isNotEmpty) {
           // ✓ TARGET POSE DETECTED - CORRECT
           displayResult = targetResults.first;
@@ -187,13 +195,15 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
         displayResult = results.reduce((a, b) => a.poseConfidence > b.poseConfidence ? a : b);
         poseMatches = true;
       }
-      
+
       if (displayResult != null) {
         setState(() {
           _lastResult = displayResult;
           _lastPoseMatches = poseMatches;
           _poseDetected = true;
         });
+        // Update session tracker with current pose
+        _sessionTracker.setCurrentPose(displayResult.poseId);
         // Check pose state and announce ONLY on changes
         _voiceAssistant.checkPoseState(
           widget.targetPose,
@@ -239,14 +249,14 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   /// collected correctness samples, persist the stat, and inform the user.
   void _checkCompletion() {
     if (_heldSeconds < 30 || _completionHandled) return;
-    
+
     // Announce milestones (10s, 20s, 30s)
     if (_heldSeconds == 10 || _heldSeconds == 20 || _heldSeconds == 30) {
       _voiceAssistant.announceMilestone(_heldSeconds);
     }
-    
+
     if (_heldSeconds < 30) return;
-    
+
     _completionHandled = true;
     _holdTicker?.cancel();
     _holdTicker = null;
@@ -259,13 +269,20 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     // Fire-and-forget; these are best-effort stat writes.
     ProfileRepository().recordCompletedPose(widget.targetPose ?? 'unknown', accuracy);
 
+    // Record to session tracker
+    _sessionTracker.addPoseCompletion(
+      widget.targetPose ?? 'unknown',
+      accuracy,
+      _heldSeconds,
+    );
+
     if (!mounted) return;
     final poseId = widget.targetPose ?? 'unknown';
     final kcaLTotal = caloriesBurned(poseId, _weightKg, _heldSeconds / 60);
-    
+
     // Voice announcement for completion
     _voiceAssistant.announceCompletion(poseId, _heldSeconds, kcaLTotal);
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -284,7 +301,11 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
       backgroundColor: const Color(0xff95D5B2),
       appBar: AppBar(
         title: Text(widget.targetPose != null ? _titleCase(widget.targetPose!) : 'Pose Detection',
-            style: const TextStyle(color: Color(0xFF1B4332), fontSize: 26, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+            style: const TextStyle(
+                color: Color(0xFF1B4332),
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Poppins')),
         centerTitle: true,
         backgroundColor: const Color(0xff95D5B2),
         elevation: 0.0,
@@ -307,7 +328,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           children: [
             const Icon(Icons.error_outline, size: 48, color: Color(0xFF1B4332)),
             const SizedBox(height: 12),
-            Text(_error!, textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF1B4332))),
+            Text(_error!,
+                textAlign: TextAlign.center, style: const TextStyle(color: Color(0xFF1B4332))),
             const SizedBox(height: 12),
             ElevatedButton(onPressed: _init, child: const Text('Retry')),
           ],
@@ -369,7 +391,9 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           top: 16,
           left: 16,
           right: 16,
-          child: !_poseDetected ? _buildNoPoseCard() : (_lastResult == null ? const SizedBox.shrink() : _buildResultCard()),
+          child: !_poseDetected
+              ? _buildNoPoseCard()
+              : (_lastResult == null ? const SizedBox.shrink() : _buildResultCard()),
         ),
         // Hold timer + calories overlay (only while a target pose is set)
         // Bottom-left, opposite the camera-flip toggle (bottom-right), so they
@@ -451,22 +475,22 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
 
   Widget _buildResultCard() {
     final r = _lastResult!;
-    
+
     // Use the strict pose matching validation
     final isTargetMode = widget.targetPose != null;
     final isMatch = _lastPoseMatches; // Use the validated match state
-    
+
     return Card(
       color: Colors.white.withValues(alpha: 0.92),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: isTargetMode
-          ? BorderSide(
-              color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
-              width: 2,
-            )
-          : BorderSide.none,
+            ? BorderSide(
+                color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
+                width: 2,
+              )
+            : BorderSide.none,
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -474,134 +498,150 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // SUCCESS CARD: Pose matches target
-            if (isTargetMode && isMatch)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      color: Color(0xFF2D6A4F),
-                      size: 18,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        '✓ Correct! ${_titleCase(widget.targetPose!)}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D6A4F),
-                        ),
+            // TARGET MODE: Minimal display - only pose name and accuracy
+            if (isTargetMode) ...[
+              // Pose name + status indicator + accuracy percentage
+              Row(
+                children: [
+                  Icon(
+                    isMatch ? Icons.check_circle : Icons.adjust,
+                    color: isMatch ? const Color(0xFF2D6A4F) : const Color(0xFF9D0208),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _titleCase(widget.targetPose!),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1B4332),
                       ),
                     ),
-                  ],
-                ),
-              )
-            // ERROR CARD: Wrong pose detected
-            else if (isTargetMode && !isMatch)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.cancel,
-                      color: Color(0xFF9D0208),
-                      size: 18,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _correctnessColor(r.correctness),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        '✗ Wrong Pose - Adjust to match ${_titleCase(widget.targetPose!)}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF9D0208),
-                        ),
+                    child: Text(
+                      '${(r.correctness * 100).round()}%',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            // Pose name and correctness - show TARGET pose when in target mode
-            Row(
-              children: [
-                Expanded(
+              // Only show adjustments when not matching (to guide correction)
+              if (!isMatch) ...[
+                const SizedBox(height: 8),
+                const Divider(height: 12),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    'Pose: ${_titleCase(isTargetMode ? widget.targetPose! : r.poseId)}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                    'Adjust:',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
                       color: Color(0xFF1B4332),
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _correctnessColor(r.correctness),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '${(r.correctness * 100).round()}%',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                ...r.topDeviations().take(2).map((d) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3),
+                    child: Row(
+                      children: [
+                        const Text('•', style: TextStyle(color: Color(0xFF9D0208), fontSize: 12)),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${d.$1}: ${d.$2.toStringAsFixed(0)}°',
+                            style: const TextStyle(fontSize: 12, color: Colors.black87),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
+            ]
+            // FREE MODE: Show pose name, confidence, and deviations
+            else ...[
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Pose: ${_titleCase(r.poseId)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Color(0xFF1B4332),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Only show confidence for correct poses
-            if (isMatch || !isTargetMode)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _correctnessColor(r.correctness),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${(r.correctness * 100).round()}%',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
               Text(
                 'Confidence: ${(r.poseConfidence * 100).round()}%',
                 style: const TextStyle(fontSize: 12, color: Colors.black54),
-              )
-            else
-              Text(
-                'Detected: ${_titleCase(r.poseId)}',
-                style: const TextStyle(fontSize: 12, color: Color(0xFF9D0208), fontWeight: FontWeight.w600),
               ),
-            const Divider(height: 12),
-            // Top 3 deviations to fix
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 4),
-              child: Text(
-                'Adjustments needed:',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1B4332),
+              const Divider(height: 12),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  'Adjustments needed:',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1B4332),
+                  ),
                 ),
               ),
-            ),
-            ...r.topDeviations().take(3).map((d) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    const Text('•', style: TextStyle(color: Color(0xFF9D0208))),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        '${d.$1}: ${d.$2.toStringAsFixed(0)}° off',
-                        style: const TextStyle(fontSize: 13, color: Colors.black87),
+              ...r.topDeviations().take(3).map((d) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    children: [
+                      const Text('•', style: TextStyle(color: Color(0xFF9D0208))),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          '${d.$1}: ${d.$2.toStringAsFixed(0)}° off',
+                          style: const TextStyle(fontSize: 13, color: Colors.black87),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                    ],
+                  ),
+                );
+              }),
+            ],
           ],
         ),
       ),
     );
   }
-  
+
   /// Returns color based on correctness percentage
   Color _correctnessColor(double correctness) {
     if (correctness >= 0.8) return const Color(0xFF2D6A4F); // Green
@@ -613,7 +653,7 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
   Widget _buildMatchBanner() {
     final r = _lastResult!;
     final isMatch = _lastPoseMatches; // Use validated match state
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       decoration: BoxDecoration(
@@ -653,8 +693,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
                 const SizedBox(height: 2),
                 Text(
                   isMatch
-                    ? 'Hold this pose to earn points!'
-                    : 'Adjust to match "${_titleCase(widget.targetPose!)}"',
+                      ? 'Hold this pose to earn points!'
+                      : 'Adjust to match "${_titleCase(widget.targetPose!)}"',
                   style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 13,
@@ -691,7 +731,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
               const SizedBox(width: 4),
               Text(
                 '${_heldSeconds}s',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1B4332)),
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1B4332)),
               ),
             ],
           ),
@@ -703,7 +744,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
               const SizedBox(width: 4),
               Text(
                 '${perMinute.toStringAsFixed(2)} kcal/min · ${kcaLTotal.toStringAsFixed(2)} kcal',
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xff7f5539)),
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xff7f5539)),
               ),
             ],
           ),
@@ -712,7 +754,8 @@ class _PoseDetectionScreenState extends State<PoseDetectionScreen> {
     );
   }
 
-  String _titleCase(String s) => s.split('_').map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}').join(' ');
+  String _titleCase(String s) =>
+      s.split('_').map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}').join(' ');
 
   @override
   void dispose() {
